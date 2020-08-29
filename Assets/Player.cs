@@ -7,11 +7,12 @@ using Mirror;
 public class Player : NetworkBehaviour
 {
     private NavMeshAgent navMeshAgent;
+    public Camera cam;
 
     // Start is called before the first frame update
     void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();   
+        navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
@@ -20,11 +21,16 @@ public class Player : NetworkBehaviour
         if (!isLocalPlayer) { return; }
 
         if (Input.GetMouseButtonDown(0)) {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast (ray, out hit)) {
                 navMeshAgent.SetDestination(hit.point);
             }
         }
+    }
+
+    public override void OnStartAuthority() {
+        cam.gameObject.SetActive(true);
+        cam.enabled = true;
     }
 }
